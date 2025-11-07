@@ -178,7 +178,6 @@ MIT License © 2025 **Cristian Villordo**
 
 **Cristian Villordo** 
 GitHub: [https://github.com/cdvcristiann]
-email: (https://github.com/cdvcristiann)
-cristianndvillordo11@gmail.com)
+email: (cristianndvillordo11@gmail.com)
 
 ---
