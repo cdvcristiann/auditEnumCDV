@@ -1,164 +1,192 @@
-````markdown
-# 🧠 auditorcdv.sh — Auditoría de Seguridad Automática
 
-Script de **auditoría ofensiva y reconocimiento automatizado** desarrollado por **Cristian Villordo**.  
-Permite realizar escaneos, enumeraciones y ataques de fuerza bruta controlados sobre un objetivo, centralizando las herramientas más comunes en un solo flujo de trabajo bash.
 
-> ⚠️ **Uso exclusivo para entornos autorizados.**  
-> Este script fue diseñado con fines educativos, de pentesting ético y análisis de seguridad en laboratorios o entornos con consentimiento expreso.
 
----
+> Script de **pentesting** y reconocimiento automatizado diseñado por **Cristian Villordo**.  
+> Centraliza `nmap`, `gobuster`, `hydra`, `enum4linux`, `searchsploit`, `linpeas` y utilidades comunes en un solo flujo de trabajo.
 
-## 📋 Funcionalidades principales
-
-| Opción | Descripción | Herramienta(s) usada(s) |
-|--------|--------------|--------------------------|
-| 1 | Escaneo SYN rápido de puertos abiertos | `nmap -sS` |
-| 2 | Escaneo de versiones de servicios | `nmap -sV` |
-| 3 | Detección de TTL / estimación de sistema operativo | `ping` |
-| 4 | Conversión de resultados XML a HTML | `xsltproc` |
-| 5 | Fuzzing de directorios web (modo limpio sin verbose) | `gobuster` |
-| 6 | Fuerza bruta SSH | `hydra` |
-| 7 | Enumeración SMB / NetBIOS | `enum4linux` |
-| 8 | Conexión SSH y subida de `linpeas.sh` | `sshpass`, `scp`, `curl/wget` |
-| 9 | Búsqueda de exploits relacionados | `searchsploit` |
-
-Todos los resultados se almacenan automáticamente en subcarpetas dentro del directorio `audits/`.
+> ⚠️ **Advertencia legal:** Usar únicamente contra sistemas con autorización explícita. El autor no se responsabiliza por usos indebidos.
 
 ---
 
-## ⚙️ Requisitos previos
+## 🧭 Resumen / Objetivo
 
-Debés ejecutar el script como **root o con sudo**, ya que algunas herramientas requieren privilegios elevados (por ejemplo, `nmap -sS`).
+`auditorcdv.sh` automatiza tareas comunes de reconocimiento activo y post-explotación inicial en entornos controlados:
 
-### 🔧 Dependencias principales
-El script verificará y ofrecerá instalar automáticamente si faltan:
+- **Detección de puertos** (`nmap -sS`)
+- **Detección de versiones** (`nmap -sV`)
+- **Estimación OS por TTL** (`ping`)
+- **Fuzzing de directorios web** (`gobuster` — modo *limpio* `-q`)
+- **Fuerza bruta SSH** (`hydra`)
+- **Enumeración SMB/NetBIOS** (`enum4linux`)
+- **Subida/ejecución de linpeas** (opcional) vía `scp`/`sshpass`
+- **Búsqueda de exploits** (`searchsploit`)
+
+Todos los resultados se guardan en `audits/<tag>/` organizados por herramienta y timestamp.
+
+---
+
+## ✅ Requisitos
+
+Ejecutar con `sudo` / root.
+
+Dependencias (puede ofrecer instalar algunas automáticamente):
+
 - `nmap`
-- `xsltproc`
 - `gobuster`
 - `hydra`
 - `enum4linux`
-- `sshpass`
-- `searchsploit`
+- `xsltproc` (para convertir XML -> HTML)
+- `sshpass` (opcional para scp/ssh automático)
+- `searchsploit` (exploitdb)
 - `curl` o `wget`
 
-
-
----
-
-## 🚀 Uso
-
-Ejecutá el script desde terminal:
-
-```bash
-sudo ./auditorcdv.sh
-```
-
-### 🧩 Flujo inicial:
-
-1. **IP/Host objetivo:** ingresá la IP o dominio del sistema a auditar.
-2. **Timing Nmap (0–5):** elige el nivel de velocidad/agresividad (por defecto `4`).
-3. **Nombre de carpeta de salida:** opcional, si no se define se autogenera.
-
-El script creará una carpeta en `audits/` para guardar todos los resultados, por ejemplo:
-
-```
-audits/prueba-20251107-211200/
-```
-
----
-
-## 📊 Ejemplo de ejecución
-
-```bash
-$ sudo ./auditorcdv.sh
-IP/Host objetivo: 10.10.11.5
-Timing template nmap (0-5) [4]: 4
-Guardar resultados en subcarpeta (nombre) [auto]: test
-Resultados se guardarán en: audits/test-20251107-210959
-
-=== MENU ===
-1) Escaneo SYN rápido (nmap -sS -T)
-2) Escaneo de versiones (-sV)
-3) Obtener TTL / estimar OS (ping)
-4) Convertir xml nmap -> html
-5) Fuzz directorios con gobuster
-6) Fuerza bruta SSH con hydra
-7) Enumeración SMB/NetBIOS
-8) Intentar SSH y subir linpeas
-9) Buscar exploits con searchsploit
-0) Salir
-```
-
-Ejemplo:
-
-```
-Elegí opción: 1
-[*] Ejecutando SYN scan (-sS) con -T4 en 10.10.11.5
-Puertos abiertos detectados: 22,80
-```
-
----
-
-## 🧰 Resultados generados
-
-Cada módulo genera salidas organizadas dentro del directorio de auditoría:
-
-```
-audits/prueba-20251107-211200/
-├── nmap_syn.nmap
-├── nmap_syn.xml
-├── puertos_abiertos.csv
-├── gobuster-20251107-211500.txt
-├── hydra-ssh-20251107-212000.txt
-├── enum4linux-20251107-212300.txt
-├── searchsploit-20251107-212500.txt
-└── ping_ttl.txt
-```
-
----
-
-## 🔍 Detalles técnicos
-
-* **Estructura modular:** cada tarea es una función independiente, fácilmente ampliable.
-* **Gestión de dependencias:** `which_or_install()` detecta y ofrece instalar binarios faltantes.
-* **Registro completo:** todas las ejecuciones guardan salida (`stdout` + `stderr`) para posterior análisis forense.
-* **Modo background:** el fuzzing con Gobuster se ejecuta en segundo plano, permitiendo seguir usando el menú.
-* **Compatibilidad:** probado en Kali Linux, Parrot y Ubuntu con herramientas de pentesting.
-
----
-
-## ⚖️ Consideraciones éticas
-
-* No utilices este script contra sistemas o redes sin autorización formal.
-* El propósito es **educativo y profesional** dentro del ámbito del *Ethical Hacking* y *Red Team legal*.
-* Cualquier uso indebido puede violar leyes locales y tratados internacionales de ciberseguridad.
-
----
-
-## 🧩 Autor
-
-**Cristian Villordo**
-Analista de Seguridad & Full Stack Developer
-🔹 Pentester / Forense / Backend Python-Django
-🔹 Poder Judicial de Corrientes – Área Regional de Informática
-
-📧 Contacto: *[Agregar email profesional o GitHub]*
-💻 GitHub: [github.com/cdvcristiann](https://github.com/cdvcristiann)
-
----
-
-## 📜 Licencia
-
-Este proyecto se distribuye bajo la licencia **MIT**, promoviendo el uso libre, la modificación y el aprendizaje ético.
-
-```
-MIT License © 2025 Cristian Villordo
-```
-
----
-Instalación manual en Kali / Debian aunque no es necesario ya que kaly trae:
+Instalación rápida (Debian / Kali):
 ```bash
 sudo apt update
 sudo apt install -y nmap gobuster hydra enum4linux xsltproc sshpass exploitdb curl wget
 ````
+
+---
+
+## 📦 Instalación del script
+
+1. Clonar/descargar el repo.
+2. Pegar `auditorcdv.sh` en la carpeta deseada.
+3. Dar permisos y ejecutar:
+
+```bash
+chmod +x auditorcdv.sh
+sudo ./auditorcdv.sh
+```
+
+---
+
+## ⚙️ Uso (flujo rápido)
+
+1. Ejecutar: `sudo ./auditorcdv.sh`
+2. Ingresar **IP/Host objetivo** (no se acepta vacío).
+3. Seleccionar **Timing nmap (0-5)** (por defecto `4`).
+4. Elegir nombre de subcarpeta (opcional) — si se deja vacío se genera `target-YYYYMMDD-HHMMSS`.
+5. Escoger la opción del menú:
+
+```
+1) Escaneo SYN rápido (nmap -sS -T)
+2) Escaneo de versiones (-sV)
+3) Obtener TTL / estimar OS (ping)
+4) Convertir xml nmap -> html (xsltproc)
+5) Fuzz directorios con gobuster (modo limpio -q)
+6) Fuerza bruta SSH con hydra
+7) Enumeración SMB/NetBIOS (enum4linux)
+8) Intentar SSH y subir linpeas (scp)
+9) Buscar exploits con searchsploit
+0) Salir
+```
+
+---
+
+## 🛠 Ejemplos prácticos
+
+### Escaneo SYN + extracción de puertos
+
+Ejecuta opción `1`:
+
+```text
+[*] Ejecutando SYN scan (-sS) con -T4 en 10.201.120.215
+Puertos abiertos detectados: 22,80,139,445,8009,8080
+```
+
+Resultado: `audits/<tag>/nmap_syn.*` y `puertos_abiertos.csv`.
+
+### Escaneo de versiones sobre puertos detectados
+
+Elegir opción `2` y presionar Enter para usar puertos detectados:
+
+```bash
+nmap -sV -T4 -v -p22,80,139,445,8009,8080 10.201.120.215 -oA audits/<tag>/puertosVersion
+```
+
+### Estimar OS por TTL
+
+Opción `3`:
+
+```text
+10.201.59.245 → TTL=61 → Unix/Linux (TTL base 64)
+```
+
+### Gobuster *limpio* (solo resultados)
+
+Opción `5` ejecuta Gobuster en background con `-q` (quiet):
+
+```bash
+gobuster dir -u http://10.201.120.215/ -w /ruta/wordlist.txt -t 40 -q -o audits/<tag>/gobuster-YYYYMMDD-HHMMSS.txt
+```
+
+* Archivo limpio con solo rutas encontradas: `gobuster-*.txt`
+* Log técnico completo: `gobuster-log-*.log`
+
+Si querés ver resultados en vivo:
+
+```bash
+tail -f audits/<tag>/gobuster-*.txt
+```
+
+### Fuerza bruta SSH (hydra)
+
+Opción `6`:
+
+```bash
+hydra -l jan -P /usr/share/wordlists/rockyou.txt -t 64 -f -V ssh://10.201.120.215
+```
+
+Salida guardada en `audits/<tag>/hydra-ssh-*.txt`.
+
+### Subir linpeas y probar
+
+Opción `8` permite:
+
+* Descargar `linpeas.sh` automáticamente al folder de auditoría.
+* Subirlo con `scp` a `/dev/shm/` o ruta que especifiques (usa `sshpass` si proporcionás contraseña).
+* Archivo local: `audits/<tag>/linpeas.sh`.
+
+---
+
+## 🗂 Estructura de salida (ejemplo)
+
+```
+audits/<tag>/
+├─ nmap_syn.nmap
+├─ nmap_syn.xml
+├─ puertos_abiertos.csv
+├─ puertosVersion.nmap
+├─ gobuster-YYYYMMDD-HHMMSS.txt
+├─ gobuster-log-YYYYMMDD-HHMMSS.log
+├─ hydra-ssh-YYYYMMDD-HHMMSS.txt
+├─ enum4linux-YYYYMMDD-HHMMSS.txt
+├─ searchsploit-YYYYMMDD-HHMMSS.txt
+└─ ping_ttl.txt
+```
+
+---
+
+## 🔁 Integraciones sugeridas (mejoras)
+
+* Ejecutar cada herramienta en **tmux** para monitoreo en vivo.
+* Generar `index.html` automático que liste y enlace todos los archivos en la carpeta `audits/<tag>`.
+* Reescribir el parser XML → JSON en **Python** para generar informes PDF/HTML.
+* Integrar `ffuf` como alternativa a `gobuster` (mayor flexibilidad y rendimiento).
+
+---
+
+## 🧾 Licencia
+
+MIT License © 2025 **Cristian Villordo**
+
+---
+
+## 📬 Contacto / Autor
+
+**Cristian Villordo** 
+GitHub: [https://github.com/cdvcristiann](https://github.com/cdvcristiann)
+cristianndvillordo11@gmail.com)
+
+---
