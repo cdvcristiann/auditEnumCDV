@@ -1,9 +1,3 @@
-Perfecto 🔥 Cristian.
-Acá tenés un **README.md profesional y completo** para tu script `auditorcdv.sh`, con estilo técnico y orientado a pentesters.
-Incluye descripción, instalación, dependencias, uso paso a paso, ejemplos y advertencias éticas.
-
----
-
 ````markdown
 # 🧠 auditorcdv.sh — Auditoría de Seguridad Automática
 
