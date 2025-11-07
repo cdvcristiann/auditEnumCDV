@@ -177,7 +177,8 @@ MIT License © 2025 **Cristian Villordo**
 ## 📬 Contacto / Autor
 
 **Cristian Villordo** 
-GitHub: [https://github.com/cdvcristiann](https://github.com/cdvcristiann)
+GitHub: [https://github.com/cdvcristiann]
+email: (https://github.com/cdvcristiann)
 cristianndvillordo11@gmail.com)
 
 ---
