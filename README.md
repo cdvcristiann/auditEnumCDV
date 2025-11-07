@@ -168,15 +168,6 @@ audits/<tag>/
 
 ---
 
-## 🔁 Integraciones sugeridas (mejoras)
-
-* Ejecutar cada herramienta en **tmux** para monitoreo en vivo.
-* Generar `index.html` automático que liste y enlace todos los archivos en la carpeta `audits/<tag>`.
-* Reescribir el parser XML → JSON en **Python** para generar informes PDF/HTML.
-* Integrar `ffuf` como alternativa a `gobuster` (mayor flexibilidad y rendimiento).
-
----
-
 ## 🧾 Licencia
 
 MIT License © 2025 **Cristian Villordo**
